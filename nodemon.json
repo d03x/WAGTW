@@ -1,0 +1,5 @@
+{
+  "restartable": "rs",
+  "watch": ["src"],
+  "ext": "ts"
+}

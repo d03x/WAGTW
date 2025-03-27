@@ -1,0 +1,40 @@
+{
+  "scripts": {
+    "build": "pnpm build:js",
+    "build:js": "esbuild  src/index.ts --platform=node --bundle --minify --outfile=dist/server.js",
+    "dev": "tsx watch src/index.ts",
+    "start": "node  dist/server.js"
+  },
+  "dependencies": {
+    "@cacheable/node-cache": "^1.5.3",
+    "@hapi/boom": "^10.0.1",
+    "@hono/node-server": "^1.14.0",
+    "@hono/node-ws": "^1.1.0",
+    "@hono/swagger-ui": "^0.5.1",
+    "@types/node": "^22.13.13",
+    "@types/qrcode": "^1.5.5",
+    "@types/qrcode-terminal": "^0.12.2",
+    "baileys": "^6.7.16",
+    "fs-extra": "^11.3.0",
+    "hono": "^4.7.5",
+    "jimp": "^1.6.0",
+    "link-preview-js": "^3.0.14",
+    "open": "^10.1.0",
+    "pino": "^9.6.0",
+    "qrcode": "^1.5.4",
+    "qrcode-terminal": "^0.12.0",
+    "sharp": "^0.33.5",
+    "socket.io": "^4.8.1",
+    "tsx": "^4.19.3"
+  },
+  "name": "wa_blast",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest",
+    "esbuild": "0.25.1"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
