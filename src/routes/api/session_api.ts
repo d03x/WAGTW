@@ -9,7 +9,6 @@ SessionApi.post('start', async function (c) {
     await whatsapp.newSession(sessionName);
     const pairingCode = emiter.on(`PAIRING_${sessionName}_CODE`, (code) => {
         console.log(code);
-
         return code;
     })
     return c.json({
