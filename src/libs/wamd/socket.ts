@@ -32,6 +32,7 @@ import {
     ON_CONNECTION_OPEN,
     ON_PAIRING_CODE,
     ON_QR_CODE,
+    ON_SESSION_LOG,
     SESSION_ALERDY_START,
 } from "./event";
 import { promise } from "zod";
@@ -99,18 +100,24 @@ class WaMD {
             emiter.emit(SESSION_ALERDY_START(session), true)
         } else {
             const startSocket = async () => {
-                const version = await fetchLatestBaileysVersion();
+                const { version, error } = await fetchLatestBaileysVersion();
                 const { saveCreds, state } = await useMultiFileAuthState(
                     this.getSessionClientFolder(session)
                 );
+                if (error) {
+                    console.error(error, "Check your internet");
+                    emiter.emit(ON_SESSION_LOG(session), {
+                        log: error,
+                    })
+                }
                 const sock: WASocket = makeWASocket({
                     printQRInTerminal: !options?.usePairingCode,
-                    version: version.version,
+                    version: version,
                     logger: loger,
                     msgRetryCounterCache,
                     auth: {
                         creds: state.creds,
-                        keys: makeCacheableSignalKeyStore(state.keys, P()),
+                        keys: makeCacheableSignalKeyStore(state.keys, loger),
                     },
                 });
                 if (options?.usePairingCode && !sock.authState.creds.registered) {
@@ -148,6 +155,9 @@ class WaMD {
                             emiter.emit(ON_CONNECTION_CLOSE(session));
                         }
                     }
+                    emiter.emit(ON_SESSION_LOG(session), {
+                        log: event,
+                    })
                 });
                 //handle credential update
                 sock.ev.on("creds.update", async (c) => {
@@ -162,8 +172,7 @@ class WaMD {
             try {
                 return await startSocket();
             } catch (error: any) {
-                emiter.emit(ON_CONNECTION_CLOSD(), error.message);
-                console.log(error);
+                emiter.emit(ON_CONNECTION_CLOSD(), "Conenction Close");
             }
         }
     }

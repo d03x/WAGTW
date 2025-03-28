@@ -18,8 +18,14 @@ const ON_CONNECTION_CLOSD = () => {
 const SESSION_ALERDY_START = (session_name: string) => {
     return `SESSION_ALERDY_START_${session_name}`;
 }
+
+const ON_SESSION_LOG = (session_name: string) => {
+    return `ON_SESSION_LOG_${session_name}`
+}
+
 export {
     SESSION_ALERDY_START,
+    ON_SESSION_LOG,
     ON_CONNECTION_CLOSD,
     ON_PAIRING_CODE,
     ON_CONNECTION_CLOSE,
