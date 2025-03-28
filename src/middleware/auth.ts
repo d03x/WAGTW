@@ -1,4 +1,4 @@
-import type { AppEnvVariables } from "@/utils/env"
+import type { AppEnvVariables } from "@/utils/zod/env"
 import { createMiddleware } from "hono/factory"
 import { HTTPException } from "hono/http-exception"
 import { jwtPayload, type JwtPayloadType } from "@/utils/zod/jwt"
@@ -14,7 +14,13 @@ export type Variables = {
 export function auth() {
     return createMiddleware<{ Variables: Variables }>(async (c, next) => {
         //validate session token
-        const authorization = c.req.header("Authorization");
+        var authorization: string;
+        const upgrade = c.req.header("Upgrade")?.toLowerCase()
+        if (upgrade === 'websocket') {
+            authorization = `Bearer ${c.req.query("token")}` as string
+        } else {
+            authorization = c.req.header("Authorization") as string;
+        }
 
         if (!authorization) {
             return c.json({
@@ -23,6 +29,7 @@ export function auth() {
         }
 
         var token = authorization.split(" ");
+
         if (token.length != 2) {
             return c.json({
                 "message": "Token is not invalid"
@@ -31,7 +38,6 @@ export function auth() {
 
         var jwtToken = token[1]
         let payload: JwtPayloadType;
-
         try {
             payload = jwtPayload.parse(await jwt.verify(jwtToken, c.var.JWT_SECRET));
         } catch (error) {

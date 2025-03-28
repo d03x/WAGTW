@@ -1,4 +1,4 @@
-import { envSchema, type AppEnvVariables } from "./env";
+import { envSchema, type AppEnvVariables } from "./zod/env";
 import { createFactory } from "hono/factory";
 import * as dotenv from "dotenv"
 dotenv.config()
