@@ -56,7 +56,7 @@ class WaMD {
         return path.join(sessionDirectory, `${this.SESSION_PREFIX}${name}`)
     }
     //new session
-    public newSession(session: string, options?: WaMdOptions) {
+    public async newSession(session: string, options?: WaMdOptions) {
         const sessionCheckAvailable = this.checkSessionAvailable(session);
         if (sessionCheckAvailable) {
             console.log("Session available")
@@ -112,8 +112,9 @@ class WaMD {
                 sock.ev.on("messages.upsert", (event) => {
                     console.log(event)
                 })
+                return sock;
             }
-            const sock = startSocket()
+            const sock = await startSocket()
             return sock;
         }
     }
